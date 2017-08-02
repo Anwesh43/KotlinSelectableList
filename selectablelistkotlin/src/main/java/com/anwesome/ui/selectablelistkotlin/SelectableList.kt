@@ -1,9 +1,12 @@
 package com.anwesome.ui.selectablelistkotlin
 
+import android.app.Activity
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Point
 import android.hardware.display.DisplayManager
 import android.view.ViewGroup
+import android.widget.ScrollView
 
 /**
  * Created by anweshmishra on 02/08/17.
@@ -11,6 +14,7 @@ import android.view.ViewGroup
 class SelectableList(context:Context,var deviceW:Int = 0,var deviceH:Int = 0,var animHandler:AnimHandler = AnimHandler()):ViewGroup(context) {
     init {
         getDimension(context)
+        setBackgroundColor(Color.parseColor("#212121"))
     }
     private fun getDimension(context: Context) {
         var displayManager = context.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
@@ -22,7 +26,7 @@ class SelectableList(context:Context,var deviceW:Int = 0,var deviceH:Int = 0,var
     }
     fun addSelectableItem(text:String) {
         var view = SelectableView(context,text,animHandler)
-        addView(view,LayoutParams(deviceW,deviceH/9))
+        addView(view, LayoutParams(deviceW,deviceH/9))
         requestLayout()
     }
     override fun onMeasure(wspec:Int,hspec:Int) {
@@ -32,14 +36,30 @@ class SelectableList(context:Context,var deviceW:Int = 0,var deviceH:Int = 0,var
             measureChild(view,wspec,hspec)
             hView += view.measuredHeight + deviceH/20
         }
-        setMeasuredDimension(deviceW,hView)
+        setMeasuredDimension(deviceW,hView+deviceH/5)
     }
     override fun onLayout(reloaded:Boolean,a:Int,b:Int,w:Int,h:Int) {
         var y = deviceH/20
         for(i in 0..childCount-1) {
             var view = getChildAt(i)
             view.layout(0,y,w,y+view.measuredHeight)
-            y+=view.measuredHeight
+            y+=view.measuredHeight+deviceH/10
+        }
+    }
+    companion object {
+        var view:SelectableList?=null
+        var scrollView:ScrollView?=null
+        fun create(activity:Activity) {
+            if(view == null) {
+                view = SelectableList(activity)
+                var scrollView = ScrollView(activity)
+                scrollView.addView(view,LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT))
+                activity.addContentView(scrollView,LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT))
+            }
+        }
+        fun addSelectableItem(text:String) {
+            view?.addSelectableItem(text)
+            scrollView?.requestLayout()
         }
     }
 }
