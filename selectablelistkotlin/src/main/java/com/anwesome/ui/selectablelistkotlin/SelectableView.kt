@@ -26,6 +26,8 @@ class SelectableView(ctx:Context,var text:String):View(ctx) {
         selectableItem?.update()
         postInvalidate()
     }
+    fun stopped():Boolean = selectableItem?.stoppedUpdating()?:true
+
     override fun onTouchEvent(event:MotionEvent):Boolean {
         when(event.action) {
             MotionEvent.ACTION_DOWN -> {
