@@ -24,8 +24,9 @@ class SelectableList(context:Context,var deviceW:Int = 0,var deviceH:Int = 0,var
         deviceW = size.x
         deviceH = size.y
     }
-    fun addSelectableItem(text:String) {
+    fun addSelectableItem(text:String,vararg listeners: OnSelectedListener) {
         var view = SelectableView(context,text,animHandler)
+        view.listeners = listeners
         addView(view, LayoutParams(deviceW,deviceH/9))
         requestLayout()
     }
@@ -57,8 +58,13 @@ class SelectableList(context:Context,var deviceW:Int = 0,var deviceH:Int = 0,var
                 activity.addContentView(scrollView,LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT))
             }
         }
-        fun addSelectableItem(text:String) {
-            view?.addSelectableItem(text)
+        fun addSelectableItem(text:String,vararg listeners: OnSelectedListener) {
+            if(listeners.size == 1) {
+                view?.addSelectableItem(text,listeners[0])
+            }
+            else {
+                view?.addSelectableItem(text)
+            }
             scrollView?.requestLayout()
         }
     }

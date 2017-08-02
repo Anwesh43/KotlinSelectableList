@@ -11,7 +11,7 @@ import android.view.View
 /**
  * Created by anweshmishra on 02/08/17.
  */
-class SelectableView(ctx:Context,var text:String,var handler:AnimHandler):View(ctx) {
+class SelectableView(ctx:Context,var text:String,var handler:AnimHandler,vararg var listeners: OnSelectedListener):View(ctx) {
     var time = 0
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     var selectableItem:SelectableItem?=null
@@ -24,6 +24,16 @@ class SelectableView(ctx:Context,var text:String,var handler:AnimHandler):View(c
     }
     fun update() {
         selectableItem?.update()
+        if(selectableItem?.stoppedUpdating()?:false && listeners.size == 1) {
+            when(selectableItem?.scale) {
+                0.0f -> {
+                    listeners[0].onUnSelect(selectableItem?.text?:"")
+                }
+                1.0f -> {
+                    listeners[0].onSelect(selectableItem?.text?:"")
+                }
+            }
+        }
         postInvalidate()
     }
     fun stopped():Boolean = selectableItem?.stoppedUpdating()?:true
