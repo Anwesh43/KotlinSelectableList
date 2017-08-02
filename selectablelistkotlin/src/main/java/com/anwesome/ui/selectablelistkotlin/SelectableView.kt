@@ -11,7 +11,7 @@ import android.view.View
 /**
  * Created by anweshmishra on 02/08/17.
  */
-class SelectableView(ctx:Context,var text:String):View(ctx) {
+class SelectableView(ctx:Context,var text:String,var handler:AnimHandler):View(ctx) {
     var time = 0
     val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     var selectableItem:SelectableItem?=null
@@ -31,7 +31,11 @@ class SelectableView(ctx:Context,var text:String):View(ctx) {
     override fun onTouchEvent(event:MotionEvent):Boolean {
         when(event.action) {
             MotionEvent.ACTION_DOWN -> {
-                selectableItem?.startUpdating()
+                if(selectableItem?.dir == 0) {
+                    selectableItem?.startUpdating()
+                    handler.addView(this)
+                }
+
             }
         }
         return true
