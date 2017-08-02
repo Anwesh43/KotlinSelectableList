@@ -8,7 +8,7 @@ import android.view.ViewGroup
 /**
  * Created by anweshmishra on 02/08/17.
  */
-class SelectableList(context:Context,var deviceW:Int = 0,var deviceH:Int = 0):ViewGroup(context) {
+class SelectableList(context:Context,var deviceW:Int = 0,var deviceH:Int = 0,var animHandler:AnimHandler = AnimHandler()):ViewGroup(context) {
     init {
         getDimension(context)
     }
@@ -19,6 +19,11 @@ class SelectableList(context:Context,var deviceW:Int = 0,var deviceH:Int = 0):Vi
         display.getRealSize(size)
         deviceW = size.x
         deviceH = size.y
+    }
+    fun addSelectableItem(text:String) {
+        var view = SelectableView(context,text,animHandler)
+        addView(view,LayoutParams(deviceW,deviceH/9))
+        requestLayout()
     }
     override fun onMeasure(wspec:Int,hspec:Int) {
         var hView = deviceH/20
